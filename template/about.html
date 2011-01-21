@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}gaa{% endblock %}</title>
+		<link rel="shortcut icon" href="/favicon.ico">
+		<style>
+			body {
+				margin: 0px 20px;
+			}
+			h2 {
+				margin: 0px;
+			}
+			section {
+				display:block;
+			}
+			section#description section {
+				margin: 10px 0px;
+			}
+			section p {
+				margin: 0px 0px 0px 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>gaa</h1>
+		</header>
+
+		<section>
+		<a href="{{ login_url }}">Login</a>
+		</section>
+
+		<section id='description'>
+			<section>
+			<img src="/images/about.png">
+			<h2>なにこれ</h2>
+			<p><a href="http://twitter.com/ryomatsu">@ryomatsu</a> が作った webベースの Twitterクライアントです。<a href="http://twicli.neocat.jp/twicli.html">twicli</a> とか <a href="http://hootsuite.com/">Hootsuite</a> とかみたいなものです。自分が使うために作った物ですけどせっかくなので公開しています。</p>
+			</section>
+			<section>
+			<h2>どうやってつかうの</h2>
+			<p>上下の「Login」から Google にログインしたら Twitter の OAuth 許可のページに飛べるのであとは適当にしてやってください。</p>
+			</section>
+			<section>
+			<p><a href="/faq">faq</a></p>
+			</section>
+		</section>
+
+		<section>
+		<a href="{{ login_url }}">Login</a>
+		</section>
+
+		<footer>
+		</footer>
+
+	</body>
+</html>

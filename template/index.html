@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}gaa{% endblock %}</title>
+		<script src="http://www.google.com/jsapi"></script>
+		<script>
+			google.load('jquery','1.4');
+			google.load('jqueryui','1.8.2');
+		</script>
+		<script src="/js/json.js"></script>
+		<script src="/js/md5.js"></script>
+		<script src="/js/jquery.ba-iff.min.js"></script>
+		<!--script src="/js/jquery.splitter.js"></script-->
+		<script src="/js/jquery.prettyLoader.js"></script>
+		<script src="/js/twitgaa.js"></script>
+		<script>
+$(document).ready(function(){
+	$('#tab').tabs();
+	$.prettyLoader({ 'bind_to_ajax' : true, });
+	onetime_token = $('#onetime_token').val();
+	setting.set = {{ setting }};
+
+	user_init();
+	update();
+	search();
+	lists();
+	get_user_info();
+	$(window).resize(function(){layout();});
+	$('#mentions-add').click(function(){get_timeline('mentions', '', true, true);});
+	$('#setting-destroy').click(function(){setting.destroy();});
+
+});
+		</script>
+		<link rel="stylesheet" href="/css/prettyLoader.css" type="text/css">
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" type="text/css">
+		<!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css"-->
+		<!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/blitzer/jquery-ui.css" type="text/css" /-->
+		<link rel="stylesheet" href="/css/style.css" type="text/css">
+		<link rel="shortcut icon" href="/favicon.ico">
+		<style>
+			/* Dialog ----------------------------------*/
+			.ui-dialog { position: absolute; padding: .2em; width: 300px; overflow: hidden; }
+			/*.ui-dialog .ui-dialog-titlebar { padding: .5em 1em .3em; position: relative;  }
+			*/
+			.ui-dialog .ui-dialog-titlebar { padding: 0.1em 1em; position: relative;  }
+			.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0; } 
+			.ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
+			.ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
+			.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
+			.ui-dialog .ui-dialog-content { border: 0; padding: .5em 1em; background: none; overflow: auto; zoom: 1; }
+			.ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
+			.ui-dialog .ui-dialog-buttonpane button { float: right; margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; width:auto; overflow:visible; }
+			.ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
+			.ui-draggable .ui-dialog-titlebar { cursor: move; }
+
+			/* user defined */
+			.ui-tabs .ui-tabs-panel { padding: 0px; }
+			.ui-tabs .ui-tabs-nav li a { padding: 0.2em 1em}
+			.ui-dialog textarea { font-size:0.8em; height:48px; }
+		</style>
+	</head>
+	<body>
+		<header id="header" class="ui-widget ui-corner-all" style="position:relative;width:auto">
+		<h1 class="ui-widget-header ui-corner-all ui-helper-clearfix" style="display:none;">gaa</h1>
+		<section class="ui-widget-content" style="overflow:hidden">
+			<img id="mine_icon">
+				<section id="form">
+					<form id="update" action="/update" method="post">
+						<textarea class="status" name="status"></textarea>
+						<input class="in_reply_to_status_id" type="hidden" name="in_reply_to_status_id" value="">
+						<input id="onetime_token" type="hidden" name="onetime_token" value="{{ onetime_token }}" />
+						<p id="word_count">0</p>
+						<input class="submit" type="submit" name="post" value="post">
+					</form>
+				</section>
+			</section>
+		</header>
+
+		<section id="timelines">
+			<section id="split">
+			</section>
+			<section id="tab">
+				<ul id="tablist">
+					<li><a href="#firsttab">add</a></li>
+				</ul>
+				<section id="firsttab">
+					<section id="add-tl">
+						<p><button id="mentions-add">mentions</button></p>
+						<p><input type="text" id="user-words"><button id="user-button">user</button></p>
+						<p><input type="text" id="search-words"><button id="search-button">search</button></p>
+						<p><input type="text" id="lists-words"><button id="lists-button">lists</button></p>
+					</section>
+					<p>----------------------------</p>
+					<section id="setting">
+						<p><button id="setting-destroy">destroy setting</button></p>
+						<p><a href="{{ logout_url }}">logout</a></p>
+					</section>
+				</section>
+			</section>
+		</section>
+	</body>
+</html>

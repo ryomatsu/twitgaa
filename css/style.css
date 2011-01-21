@@ -1,0 +1,234 @@
+/*
+html5doctor.com Reset Stylesheet
+v1.4
+2009-07-27
+Author: Richard Clark - http://richclarkdesign.com
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, dialog, figure, footer, header,
+hgroup, menu, nav, section,
+time, mark, audio, video {
+	margin:0;
+	padding:0;
+	border:0;
+	outline:0;
+	font-size:100%;
+	vertical-align:baseline;
+	background:transparent;
+	list-style:none;
+}
+body {
+	font-size:14px;
+	line-height:1;
+}
+
+article, aside, dialog, figure, footer, header,
+hgroup, nav, section {
+	display:block;
+}
+
+nav ul {
+	list-style:none;
+}
+
+blockquote, q {
+	quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content:'';
+	content:none;
+}
+
+a {
+	margin:0;
+	padding:0;
+	border:0;
+	font-size:100%;
+	vertical-align:baseline;
+	background:transparent;
+}
+
+ins {
+	background-color:#ff9;
+	color:#000;
+	text-decoration:none;
+}
+
+mark {
+	background-color:#ff9;
+	color:#000;
+	font-style:italic;
+	font-weight:bold;
+}
+
+del {
+	text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+	border-bottom:1px dotted #000;
+	cursor:help;
+}
+
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+
+hr {
+	display:block;
+	height:1px;
+	border:0;
+	border-top:1px solid #cccccc;
+	margin:1em 0;
+	padding:0;
+}
+
+input, select {
+	vertical-align:middle;
+}
+
+.tweets-header {
+	padding: 1px 5px;
+	border-bottom: 1px solid #999999;
+}
+.tweets-header a{
+	text-decoration:none;
+}
+
+article.tweet {
+	clear: both;
+	line-height: 24px;
+	font-size:small;
+	display: block;
+	padding: 1px 5px;
+	overflow:hidden;
+	border-bottom: 1px solid #999999;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+article.tweet span.screen_name,
+article.tweet span.act-button,
+article.tweet img.profile_image
+{
+	display:block;
+	float:left;
+}
+
+article.tweet img.profile_image {
+	width: 24px;
+	height: 24px;
+	float: left;
+}
+
+article.tweet span.screen_name {
+	width: 115px;
+	padding: 0px 5px;
+}
+
+article.tweet span.text {
+	display:block;
+	margin-left: 150px;
+}
+
+article.tweet span.datetime{
+	color: #666666;
+}
+
+article.tweet span.act-button {
+	width: 30px;
+}
+
+article.tweet ul.meta {
+	margin-left: 24px;
+	display:none;
+	clear: both;
+}
+article.tweet ul.meta li {
+	float:left;
+	margin-left: 5px;
+}
+article.tweet li.meta span.button{
+}
+
+
+ul.profile li {
+	margin: 5px 0px;
+}
+
+
+#mine_icon {
+	width: 48px;
+	height: 48px;
+	float:left;
+}
+
+section#form {
+	float: left;
+	height: 48px;
+	width: 525px;
+}
+form#update {
+	height: 48px;
+}
+textarea {
+	width: 450px;
+	height: 48px;
+	font-size: 0.8em !important;
+	float: left;
+}
+
+#word_count {
+	padding: 0px 5px;
+	margin: 0px 0px 2px 455px;
+	width: 40px;
+}
+
+
+nav#tab {
+	clear:both;
+}
+nav#tab ul li {
+	float:left;
+	padding:5px 10px;
+	margin:0px 5px;
+	border:1px solid #000000
+}
+
+.user_info img.profile_image {
+	width: 32px;
+	height: 32px;
+}
+
+footer {
+	clear:both;
+}
+
+#timelines {
+	width: 100%;
+}
+
+#timelines .tweets-wrapper {
+	height: auto;
+	overflow-y: scroll;
+}
+
+.timeline-wrapper {
+	position: relative;
+	float: left;
+}
+.timeline {
+	width:auto;
+}

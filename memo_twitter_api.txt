@@ -1,0 +1,174 @@
+public_timeline_url = "http://api.twitter.com/1/statuses/public_timeline.json"
+home_timeline_url = "http://api.twitter.com/1/statuses/home_timeline.json"
+friends_timeline_url = "http://api.twitter.com/1/statuses/friends_timeline.json"
+user_timeline_url = "http://api.twitter.com/1/statuses/user_timeline.json"
+mensions_url = "http://api.twitter.com/1/statuses/mensions.json"
+retweeted_by_me_url = "http://api.twitter.com/1/statuses/retweeted_by_me.json"
+retweeted_to_me_url = "http://api.twitter.com/1/statuses/retweeted_to_me.json"
+retweeted_of_me_url = "http://api.twitter.com/1/statuses/retweeted_of_me.json"
+
+show_url = "http://api.twitter.com/1/statuses/show/id.json"
+update_url = "http://api.twitter.com/1/statuses/update.json"
+destroy_url = "http://api.twitter.com/1/statuses/destroy/id.json"
+retweet_url = "http://api.twitter.com/1/statuses/retweet/id.json"
+retweets_url = "http://api.twitter.com/1/statuses/retweets/id.json"
+retweeted_by_url = "http://api.twitter.com/1/statuses/id/retweeted_by.json"
+retweeted_by_ids_url = "http://api.twitter.com/1/statuses/id/retweeted_by/ids.json"
+
+Timeline Methods:
+	statuses/public_timeline
+		url:http://api.twitter.com/1/statuses/public_timeline.format
+		formats:xml,json,rss,atom
+		http method:GET
+		API rate limited:true
+	statuses/home_timeline
+		url:http://api.twitter.com/1/statuses/home_timeline.format
+		formats:xml,json,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/friends_timeline
+		url:http://api.twitter.com/1/statuses/friends_timeline.format
+		formats:xml,json,rss,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/user_timeline
+		url:http://api.twitter.com/1/statuses/user_timeline.format
+		formats:xml,json,rss,atom
+		http method:GET
+		Requires Authentication:true, if requesting a protected user's timeline
+		API rate limited:1 call per request
+		Parameters:
+			id:Optional
+			user_id:Optional
+			screen_name:Optional
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/mensions
+		url:http://api.twitter.com/1/statuses/mensions.format
+		formats:xml,json,rss,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/retweeted_by_me
+		url:http://api.twitter.com/1/statuses/retweeted_by_me.format
+		formats:xml,json,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/retweeted_to_me
+		url:http://api.twitter.com/1/statuses/retweeted_to_me.format
+		formats:xml,json,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+	statuses/retweeted_of_me
+		url:http://api.twitter.com/1/statuses/retweeted_of_me.format
+		formats:xml,json,atom
+		http method:GET
+		Requires Authentication:true
+		API rate limited:1 call per request
+		Parameters:
+			since_id:Optional
+			max_id:Optional
+			count:Optional
+			page:Optional
+Status Methods:
+	statuses/show
+		url:http://api.twitter.com/1/statuses/show/id.format
+		formats:xml,json
+		http method:GET
+		Request Authentication: false, unless the author of the status if protected
+		API rate limited:true
+		Geo-tagging:
+		Contributors:
+		Parameters:
+			id:Required. The numerical ID of the status to retrieve.
+	statuses/update
+		url:http://api.twitter.com/1/statuses/update.format
+		formats:xml,json
+		http method:POST
+		Request Authentication: true
+		API rate limited:false
+		Geo-tagging:
+		Contributors:
+		Parameters:
+			status:Required
+			in_reply_to_status_id:Optional
+			lat:Optional
+			long:Optional
+			place_id:Optional
+			display_coordinates:Optional
+	statuses/destroy
+		url:http://api.twitter.com/1/statuses/destroy/id.format
+		formats:xml,json
+		http method:POST,DELETE
+		Request Authentication: true
+		API rate limited:false
+		Parameters:
+			id:Required. The ID of the status to destroy
+	statuses/retweet
+		url:http://api.twitter.com/1/statuses/retweet/id.format
+		formats:xml,json
+		http method:POST,PUT
+		Request Authentication: true
+		API rate limited:false
+		Parameters:
+			id:Required. The numerical ID of the tweet you are retweeting
+	statuses/retweets
+		url:http://api.twitter.com/1/statuses/retweets/id.format
+		formats:xml,json
+		http method:GET
+		Request Authentication: true
+		API rate limited:1 call per request
+		Parameters:
+			id:Required. The numerical ID of the tweet you want the retweets of.
+			count:Optional
+	statuses/id/retweeted_by
+		url:http://api.twitter.com/1/statuses/id/retweeted_by.format
+		formats:xml,json
+		http method:GET
+		Request Authentication: true
+		API rate limited:false
+		Parameters:
+			id:Required. The id of the status
+			count:Optional
+			page:Optional
+	statuses/id/retweeted_by/ids
+		url:http://api.twitter.com/1/statuses/id/retweeted_by/ids.format
+		formats:xml,json
+		http method:GET
+		Request Authentication: true
+		API rate limited:false
+		Parameters:
+			id:Required. The id of the status
+			count:Optional
+			page:Optional

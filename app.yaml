@@ -1,0 +1,27 @@
+application: twitgaa-dev
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /js
+  static_dir: js
+
+- url: /images
+  static_dir: image
+
+- url: /css
+  static_dir: css
+
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
+# http://d.hatena.ne.jp/bellbind/20090716/1247757120
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+
+- url: .*
+  script: main.py
+  #login: admin
