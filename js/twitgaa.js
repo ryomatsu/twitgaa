@@ -234,6 +234,10 @@ var create_id_from_tl = function(tl_type) {
 	return CybozuLabs.MD5.calc(tl_type, CybozuLabs.MD5.BY_UTF16);
 }
 
+var create_id_from_target = function(target) {
+	return target.split(' ')[0].split('#')[1];
+}
+
 var create_args_from_tl_type = function(tl_type) {
 	var _tl_type = tl_type.split('/');
 	var type = _tl_type[0];
@@ -350,6 +354,7 @@ var display_image = function(url, image_url) {
 }
 
 var make_tweets_html = function(target, data, type) {
+	var article_id = create_id_from_tl(target) + '-' + data.id_str;
 	var created_at = new Date(data.created_at);
 	var datetime = zeroPadding(created_at.getMonth() + 1, 2)
 		+ '/' + zeroPadding(created_at.getDate(), 2)
@@ -363,11 +368,11 @@ var make_tweets_html = function(target, data, type) {
 	}
 
 	if (is_prepend(type)) {
-		$(target).prepend('<article class="tweet"></article>');
+		$(target).prepend('<article class="tweet" id="'+article_id+'"></article>');
 		_target = target + ' :first';
 	}
 	if (is_append(type)) {
-		$(target).append('<article class="tweet"></article>');
+		$(target).append('<article class="tweet" id="'+article_id+'"></article>');
 		_target = target + ' :last';
 	}
 
@@ -381,6 +386,7 @@ var make_tweets_html = function(target, data, type) {
 
 	$(_target)
 		.html('<input type="hidden" class="id" value="'+data.id_str+'">'
+				+ '<input type="hidden" class="article_id" value="'+article_id+'">'
 				+ '<input type="hidden" class="screen_name" value="'+screen_name+'">'
 				+ '<img class="profile_image" src="'+profile_image_url+'">'
 				+ '<span class="screen_name"><a href = "'+twitter_url + screen_name+'" onclick="user(this); return false;">' + screen_name+'</a></span>')
@@ -401,7 +407,9 @@ var make_tweets_html = function(target, data, type) {
 				.append('<li><a href="#" onclick="favorite(this);return false;">'+msg['fav']+'</a></li>').end()
 				.iff(is_mine, screen_name)
 				.append('<li><a href="#" onclick="destroy(this);return false;">'+msg['destroy']+'</a></li>').end()
-			   );
+			   )
+		.append($('<section class="in_reply_to_box">')
+		.append($('<section class="in_reply_to_tweets">')));
 }
 
 var display_timeline = function(tl_type, focus_flg) {
@@ -590,34 +598,37 @@ var search_tweet = function(key, val) {
 	return false;
 }
 
-var get_in_reply_to = function(_json) {
-	make_tweets_html('#in-reply-to .tweets', _json, 'append');
-	var tweet = search_tweet('id', _json.in_reply_to_status_id);
+var get_in_reply_to = function(target, _json) {
+	var tweet = search_tweet('id', _json.in_reply_to_status_id_str);
 	var params = { 'onetime_token' : onetime_token }
 	if (typeof(tweet) == 'boolean') {
 		if (_json.in_reply_to_status_id == null) {
 			return false;
 		}
-		$.getJSON('/api/statuses/show/' + _json.in_reply_to_status_id + '.json', params,
+		$.getJSON('/api/statuses/show/' + _json.in_reply_to_status_id_str + '.json', params,
 				function(json) {
 					if (typeof(json.error) != 'undefined') {
 						return false;
 					}
-					get_in_reply_to(json);
+					make_tweets_html(target, json, 'append');
+					get_in_reply_to(target, json);
 				});
 	} else {
-		get_in_reply_to(tweet);
+		make_tweets_html(target, tweet, 'append');
+		get_in_reply_to(target, tweet);
 	}
 };
 
 var in_reply_to = function(_this) {
 	var root_tweet = search_tweet('id', $(_this).closest('ul').siblings('input.id').val());
-	if ($('#in-reply-to').length > 0) {
-		$('#in-reply-to').remove();
+	var article_id = $(_this).closest('ul').siblings('input.article_id').val();
+	var target = '#' + article_id + ' > .in_reply_to_box > .in_reply_to_tweets';
+	if ($(target).length > 0) {
+		$(target).html('');
 	}
-	$('<section id="in-reply-to" class="ui-draggable user_info"><section class="tweets"></section></section>')
-		.dialog({'title':'reply','width':dialog_width});
-	get_in_reply_to(root_tweet);
+	//$('<section id="in-reply-to" class="ui-draggable user_info"><section class="tweets"></section></section>')
+	//	.dialog({'title':'reply','width':dialog_width});
+	get_in_reply_to(target, root_tweet);
 	return false;
 }
 

@@ -162,6 +162,12 @@ article.tweet ul.meta li {
 }
 article.tweet li.meta span.button{
 }
+article.tweet .in_reply_to_box {
+	margin-left: 20px;
+}
+article.tweet .in_reply_to_box article.tweet {
+	border-width: 0px;
+}
 
 
 ul.profile li {
