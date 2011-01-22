@@ -164,9 +164,13 @@ article.tweet li.meta span.button{
 }
 article.tweet .in_reply_to_box {
 	margin-left: 20px;
+	clear:both;
 }
 article.tweet .in_reply_to_box article.tweet {
 	border-width: 0px;
+}
+article.tweet .contents {
+	margin-left: 150px;
 }
 
 

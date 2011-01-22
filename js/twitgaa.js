@@ -100,7 +100,7 @@ var tinyurl_list = [
 	, 'twiturl.de' , 'twitzap.com' , 'twtr.us' , 'twurl.nl' , 'u.nu' , 'ub0.cc' , 'ur1.ca' , 'url.co.uk' , 'url.ie'
 	, 'url4.eu' , 'ustre.am' , 'virl.com' , 'vl.am' , 'wa9.la' , 'wp.me' , 'x.se' , 'xav.cc'
 	, 'xr.com' , 'xrl.in' , 'xrl.us' , 'xurl.jp' , 'yep.it' , 'yfrog.com' , 'zi.pe' , 'zz.gd'
-	,'htn.to', 'p.tl'
+	,'htn.to', 'p.tl', 'tobeto.be'
 	];
 
 	var imageurl_list = [
@@ -139,8 +139,17 @@ var movieurl_list = [
 {
 	'name' : 'youtube',
 		'func' : function(url) {
-			var _url = url.split('=');
+			var _url = url.split('v=');
 			var id = _url[1];
+			var ret = 
+				'<object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/%id%&amp;hl=en_US&amp;fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/%id%&amp;hl=en_US&amp;fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>';
+			return ret.replace(/%id%/g, id);
+		}
+}, {
+	'name' : 'youtu.be',
+		'func' : function(url) {
+			var _url = url.split('/');
+			var id = _url[3];
 			var ret = 
 				'<object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/%id%&amp;hl=en_US&amp;fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/%id%&amp;hl=en_US&amp;fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>';
 			return ret.replace(/%id%/g, id);
@@ -291,31 +300,30 @@ var auto_link_user = function(text) {
 
 var auto_link = function(text) {
 	return text
-		.replace(/(https?:\/\/[a-z0-9~!@#$%^&*_,+=\-\/\.\?]*)/ig, "<a href='$1' target='_blank' onclick=\"adjust_meta_click(this); link_click('$1'); return false;\">$1</a>")
+		.replace(/(https?:\/\/[a-z0-9~!@#$%^&*_,+=\-\/\.\?]*)/ig, "<a href='$1' target='_blank' onclick=\"adjust_meta_click(this); link_click(this,'$1'); return false;\">$1</a>")
 		.replace(/([\s]|^)(#[a-zA-Z0-9_\-]+)/ig, " <a href='http://twitter.com/search?q=$2' onclick=\"adjust_meta_click(this); get_timeline('search', '$2', true, true); return false;\">$2</a>")
 		.replace(/q=#/, "q=%23");
 }
 
-var link_click = function(url) {
+var link_click = function(_this, url) {
 	for (i=0; i<movieurl_list.length; i++) {
 		if (url.indexOf(movieurl_list[i]['name']) > 0) {
-			display_movie(url, movieurl_list[i]['func'](url));
+			display_movie(_this, url, movieurl_list[i]['func'](url));
 			return false;
 		}
 	}
 	for (i=0; i<imageurl_list.length; i++) {
 		if (url.indexOf(imageurl_list[i]['name']) > 0) {
-			display_image(url, imageurl_list[i]['func'](url));
+			display_image(_this, url, imageurl_list[i]['func'](url));
 			return false;
 		}
 	}
 	for (i=0; i<tinyurl_list.length; i++) {
 		if (url.indexOf('://' + tinyurl_list[i]) > 0) {
-			display_tinyurl(url);
-		return false;
+			display_tinyurl(_this, url);
+			return false;
+		}
 	}
-	}
-
 	for (i=0; i<twitterurl_list.length; i++) {
 		if (url.match(twitterurl_list[i]['regexp']) != null) {
 			twitterurl_list[i]['func'](url);
@@ -326,31 +334,35 @@ var link_click = function(url) {
 	window.open(url);
 }
 
-var display_tinyurl = function(tinyurl) {
+var display_tinyurl = function(_this, url) {
 	// http://python.g.hatena.ne.jp/edvakf/20090218/1234945800
-	var params = {'url':tinyurl, 'callback':'cb'}
+	var params = {'url':url, 'callback':'cb'}
+	var html = $(_this).parent().html();
 	$.ajax({
 url : 'http://atsushaa.appspot.com/untiny/get',
 data : params,
 dataType : 'jsonp',
 complete : function(json) {},
 success : function(json) {
-if (typeof(json[tinyurl]) != 'undefined') {
-var url = json[tinyurl];
-var html = auto_link('<p>'+url+'</p>');
-$('<section id="'+create_id_from_tl(url)+'" class="tinyurl">').html(html).dialog({title:tinyurl});
+if (typeof(json[url]) != 'undefined') {
+var tinyurl = json[url];
+$(_this).parent().html(html.split(url).join(tinyurl));
 }
 }
 });
 }
 
-var display_movie = function(url,html) {
-	$('<section id="'+create_id_from_tl(url)+'" class="movie">').html(html).dialog({title:'thumbnail', 'width':500});
+var display_movie = function(_this, url, html) {
+	var article_id = $(_this).parent().siblings('input.article_id').val();
+	var target = '#' + article_id + ' > .contents';
+	$(target).html(html)
 }
 
-var display_image = function(url, image_url) {
-	var html = '<p style="text-align:center;"><a href="'+url+'" target="_blank"><img src="'+image_url+'"></a>';
-	$('<section id="'+create_id_from_tl(url)+'" class="image">').html(html).dialog({title:'thumbnail'});
+var display_image = function(_this, url, image_url) {
+	var article_id = $(_this).parent().siblings('input.article_id').val();
+	var target = '#' + article_id + ' > .contents';
+	var html = '<p style="text-align:left;"><a href="'+url+'" target="_blank"><img src="'+image_url+'"></a>';
+	$(target).html(html)
 }
 
 var make_tweets_html = function(target, data, type) {
@@ -394,6 +406,7 @@ var make_tweets_html = function(target, data, type) {
 					function(){$(this).siblings('.meta').show()},
 					function(){$(this).siblings('.meta').hide()}
 					))
+		.append($('<section class="contents">'))
 		.append($('<ul class="meta">')
 				.html('<li><span class="datetime"><a href="http://twitter.com/'+screen_name+'/status/'+data.id_str+'" target="_blank">'+datetime+'</a></span></li><li><span class="source">via ' + convert_source(data.source) + '</span></li>')
 				.iff(is_in_reply_to, data.in_reply_to_status_id)
@@ -409,7 +422,8 @@ var make_tweets_html = function(target, data, type) {
 				.append('<li><a href="#" onclick="destroy(this);return false;">'+msg['destroy']+'</a></li>').end()
 			   )
 		.append($('<section class="in_reply_to_box">')
-		.append($('<section class="in_reply_to_tweets">')));
+		.append($('<section class="in_reply_to_tweets">')))
+		;
 }
 
 var display_timeline = function(tl_type, focus_flg) {
