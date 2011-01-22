@@ -43,6 +43,10 @@ var method_list = {
 
 var setting = {
 	'def' : { 'tab' : [ 'home_timeline', 'mentions' ] },
+	'style': function(style) {
+		setting.set['style'] = style;
+		setting.save();
+	},
 	'add_tl' : function(tl_type) {
 		for (i=0;i<setting.set['tab'].length;i++) {
 			if (setting.set['tab'][i] == tl_type) {
@@ -85,6 +89,32 @@ var setting = {
 	}
 };
 
+var style_list = [
+	{'filename':'ui-lightness','name':'UILightness'},
+	{'filename':'ui-darkness' ,'name':'UIDarkness'},
+	{'filename':'smoothness'  ,'name':'Smoothness'},
+	{'filename':'start'       ,'name':'Start'},
+	{'filename':'redmond'     ,'name':'Redmond'},
+	{'filename':'sunny'       ,'name':'Sunny'},
+	{'filename':'overcast'    ,'name':'Overcast'},
+	{'filename':'le-frog'     ,'name':'LeFrog'},
+	{'filename':'flick'       ,'name':'Flick'},
+	{'filename':'pepper'      ,'name':'Pepper'},
+	{'filename':'eggplant'    ,'name':'Eggplant'},
+	{'filename':'dark-hive'   ,'name':'DarkHive'},
+	{'filename':'cupertino'   ,'name':'Cupertino'},
+	{'filename':'south-st'    ,'name':'SouthSt'},
+	{'filename':'blitzer'     ,'name':'Blitzer'},
+	{'filename':'humanity'    ,'name':'Humanity'},
+	{'filename':'hot-sneaks'  ,'name':'HotSneaks'},
+	{'filename':'excite-bike' ,'name':'ExciteBike'},
+	{'filename':'vader-vader' ,'name':'VaderVader'},
+	{'filename':'dot-luv'     ,'name':'DotLuv'},
+	{'filename':'mint-choc'   ,'name':'MintChoc'},
+	{'filename':'black-tie'   ,'name':'BlackTie'},
+	{'filename':'trontastic'  ,'name':'Trontastic'},
+	{'filename':'swanky-purse','name':'SwankyPurse'}
+]
 
 var tinyurl_list = [
 	'.tk' , '1url.com' , '2pl.us' , '3.ly' , 'a.gd' , 'a.gg' , 'a.nf'
@@ -928,3 +958,42 @@ var layout = function() {
 	$('#timelines .tweets-wrapper').height(height - title_bar_height);
 }
 
+var style_list_set = function() {
+	var html = '<label for="style-changer">Style Select </label><select name="style-changer" id="style-changer">';
+	var selected = '';
+	var style = 'ui-lightness';
+	for (var i=0; i<style_list.length; i++) {
+		if (typeof setting.set['style'] != 'undefined' && style_list[i]['filename'] == setting.set['style']) {
+			selected = ' selected';
+			style = setting.set['style'];
+		} else {
+			selected = '';
+		}
+		html += '<option value="'+style_list[i]['filename']+'"'+selected+'>'+style_list[i]['name']+'</option>';
+	}
+	html += '</input>';
+	$('#style-select').html(html);
+
+	var style_html = '<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/%style%/jquery-ui.css" type="text/css"><link rel="stylesheet" href="/css/adjust_jquery_ui.css" type="text/css">';
+	$('#style-changer').change(function(){
+		style = $('#style-changer').val()
+		$('head').append(style_html.replace('%style%', style));
+		style_adjust();
+		setting.style(style);
+		setTimeout(style_adjust,1000);
+	});
+	$('head').append(style_html.replace('%style%', style));
+	setTimeout(style_adjust,1000);
+}
+
+var style_adjust = function() {
+	var b_color = $('.ui-widget-content').css('background-color');
+	var f_color = $('.ui-widget-content').css('color');
+	var css = {
+		'background-color' : b_color,
+		'color' : f_color
+	}
+	$('textarea').css(css);
+	$('input').css(css);
+	$('body').css(css);
+}

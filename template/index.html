@@ -21,6 +21,7 @@ $(document).ready(function(){
 	onetime_token = $('#onetime_token').val();
 	setting.set = {{ setting }};
 
+	style_list_set();
 	user_init();
 	update();
 	search();
@@ -33,32 +34,12 @@ $(document).ready(function(){
 });
 		</script>
 		<link rel="stylesheet" href="/css/prettyLoader.css" type="text/css">
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" type="text/css">
+		<!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" type="text/css"-->
 		<!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css"-->
 		<!--link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/blitzer/jquery-ui.css" type="text/css" /-->
 		<link rel="stylesheet" href="/css/style.css" type="text/css">
+		<!--link rel="stylesheet" href="/css/adjust_jquery_ui.css" type="text/css"-->
 		<link rel="shortcut icon" href="/favicon.ico">
-		<style>
-			/* Dialog ----------------------------------*/
-			.ui-dialog { position: absolute; padding: .2em; width: 300px; overflow: hidden; }
-			/*.ui-dialog .ui-dialog-titlebar { padding: .5em 1em .3em; position: relative;  }
-			*/
-			.ui-dialog .ui-dialog-titlebar { padding: 0.1em 1em; position: relative;  }
-			.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0; } 
-			.ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
-			.ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
-			.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
-			.ui-dialog .ui-dialog-content { border: 0; padding: .5em 1em; background: none; overflow: auto; zoom: 1; }
-			.ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
-			.ui-dialog .ui-dialog-buttonpane button { float: right; margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; width:auto; overflow:visible; }
-			.ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
-			.ui-draggable .ui-dialog-titlebar { cursor: move; }
-
-			/* user defined */
-			.ui-tabs .ui-tabs-panel { padding: 0px; }
-			.ui-tabs .ui-tabs-nav li a { padding: 0.2em 1em}
-			.ui-dialog textarea { font-size:0.8em; height:48px; }
-		</style>
 	</head>
 	<body>
 		<header id="header" class="ui-widget ui-corner-all" style="position:relative;width:auto">
@@ -85,6 +66,8 @@ $(document).ready(function(){
 					<li><a href="#firsttab">add</a></li>
 				</ul>
 				<section id="firsttab">
+					<section id="style-select">
+					</section>
 					<section id="add-tl">
 						<p><button id="mentions-add">mentions</button></p>
 						<p><input type="text" id="user-words"><button id="user-button">user</button></p>
