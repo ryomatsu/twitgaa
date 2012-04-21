@@ -135,32 +135,52 @@ var tinyurl_list = [
 
 	var imageurl_list = [
 {
+	'name' : '/photo/',
+		'func' : function(url) {
+			var dfd = $.Deferred();
+			var _url = url.split('/');
+			var id = _url[_url.length - 3];
+			var no = _url[_url.length - 1] - 1 ;
+			var params = { "include_entities" : true, 'onetime_token' : onetime_token  };
+			var ret_url = "";
+			var try_count = 5;
+			$.getJSON('/api/statuses/show/' + id + '.json', params, function(json) {
+				ret_url = json.entities.media[no].media_url + ":thumb";
+				dfd.resolve(ret_url);
+			});
+			return dfd.promise();
+		}
+}, {
 	'name' : 'twitpic',
 		'func' : function(url) {
+			var dfd = $.Deferred();
 			var _url = url.split('/');
 			var id = _url[_url.length - 1];
-			return 'http://twitpic.com/show/thumb/' + id;
+			return dfd.resolve('http://twitpic.com/show/thumb/' + id);
 		}
 }, {
 	'name' : 'movapic',
 		'func' : function(url) {
+			var dfd = $.Deferred();
 			// todo: support this url pattern
 			// http://movapic.com/Hamachiya2/pic/2413540
 			var _url = url.split('/');
 			var id = _url[_url.length - 1];
-			return 'http://image.movapic.com/pic/s_' + id + '.jpeg';
+			return dfd.resolve('http://image.movapic.com/pic/s_' + id + '.jpeg');
 		}
 }, {
 	'name' : 'yfrog',
 		'func' : function(url) {
+			var dfd = $.Deferred();
 			var _url = url.split('/');
 			var id = _url[_url.length - 1];
-			return 'http://yfrog.com/' + id + '.th.jpg'
+			return dfd.resolve('http://yfrog.com/' + id + '.th.jpg');
 		}
 }, {
 	'name' : 'gyazo',
 		'func' : function(url) {
-			return 'http://gyazo-thumbnail.appspot.com/thumbnail?url=' + url;
+			var dfd = $.Deferred();
+			return dfd.resolve('http://gyazo-thumbnail.appspot.com/thumbnail?url=' + url);
 		}
 }
 ];
@@ -331,7 +351,7 @@ var auto_link_user = function(text) {
 var auto_link = function(text) {
 	return text
 		.replace(/(https?:\/\/[a-z0-9~!@#$%^&*_,+=\-\/\.\?]*)/ig, "<a href='$1' target='_blank' onclick=\"adjust_meta_click(this); link_click(this,'$1'); return false;\">$1</a>")
-		.replace(/([\s]|^)(#[a-zA-Z0-9_\-]+)/ig, " <a href='http://twitter.com/search?q=$2' onclick=\"adjust_meta_click(this); get_timeline('search', '$2', true, true); return false;\">$2</a>")
+		.replace(/(\s|^)(#\S+)/ig, "$1<a href='http://twitter.com/search?q=$2' onclick=\"adjust_meta_click(this); get_timeline('search', '$2', true, true); return false;\">$2</a>")
 		.replace(/q=#/, "q=%23");
 }
 
@@ -344,7 +364,9 @@ var link_click = function(_this, url) {
 	}
 	for (i=0; i<imageurl_list.length; i++) {
 		if (url.indexOf(imageurl_list[i]['name']) > 0) {
-			display_image(_this, url, imageurl_list[i]['func'](url));
+			imageurl_list[i]['func'](url).then(function(ret_url) {
+				display_image(_this, url, ret_url);
+			});
 			return false;
 		}
 	}
