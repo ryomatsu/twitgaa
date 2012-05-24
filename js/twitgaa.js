@@ -6,19 +6,21 @@ var ext = '.json';
 var method_list = {
 	'home_timeline' : {
 		'twurl' : '',
-		'url' : 'statuses/home_timeline' + ext,
+		'url'   : 'statuses/home_timeline' + ext,
 		'title' : 'timeline',
+		'tab'   : 'home',
 		'interval_time' : 60000
 	},
 	'user_timeline' : {
-		'url' : 'statuses/user_timeline/%username%' + ext,
+		'url'   : 'statuses/user_timeline/%username%' + ext,
 		'title' : 'user',
 		'interval_time' : 300000
 	},
 	'mentions' : {
 		'twurl' : '#replies',
-		'url' : 'statuses/mentions' + ext,
+		'url'   : 'statuses/mentions' + ext,
 		'title' : 'mentions',
+		'tab'   : '@',
 		'interval_time' : 300000
 	},
 	'messages' : {
@@ -31,12 +33,14 @@ var method_list = {
 		'twurl' : '%username%/%list%',
 		'url' : '%username%/lists/%list%/statuses' + ext,
 		'title' : '%username%/%list%',
+		'tab'   : '', // to define is in display_timeline.
 		'interval_time' : 300000
 	},
 	'search' : {
 		'twurl' : 'search?q=%search%',
 		'url' : 'search' + ext + '?q=%search%',
 		'title' : '%search%',
+		'tab'   : '', // to define is in display_timeline.
 		'interval_time' : 300000
 	}
 };
@@ -99,16 +103,16 @@ var style_list = [
 	{'filename':'overcast'    ,'name':'Overcast'},
 	{'filename':'le-frog'     ,'name':'LeFrog'},
 	{'filename':'flick'       ,'name':'Flick'},
-	{'filename':'pepper'      ,'name':'Pepper'},
+	{'filename':'pepper-grinder'      ,'name':'PepperGrinder'},
 	{'filename':'eggplant'    ,'name':'Eggplant'},
 	{'filename':'dark-hive'   ,'name':'DarkHive'},
 	{'filename':'cupertino'   ,'name':'Cupertino'},
-	{'filename':'south-st'    ,'name':'SouthSt'},
+	{'filename':'south-street'    ,'name':'SouthStreet'},
 	{'filename':'blitzer'     ,'name':'Blitzer'},
 	{'filename':'humanity'    ,'name':'Humanity'},
 	{'filename':'hot-sneaks'  ,'name':'HotSneaks'},
 	{'filename':'excite-bike' ,'name':'ExciteBike'},
-	{'filename':'vader-vader' ,'name':'VaderVader'},
+	{'filename':'vader' ,'name':'Vader'},
 	{'filename':'dot-luv'     ,'name':'DotLuv'},
 	{'filename':'mint-choc'   ,'name':'MintChoc'},
 	{'filename':'black-tie'   ,'name':'BlackTie'},
@@ -135,20 +139,27 @@ var tinyurl_list = [
 
 	var imageurl_list = [
 {
-	'name' : '/photo/',
+	'name' : 'p.twipple.jp',
 		'func' : function(url) {
 			var dfd = $.Deferred();
 			var _url = url.split('/');
-			var id = _url[_url.length - 3];
-			var no = _url[_url.length - 1] - 1 ;
-			var params = { "include_entities" : true, 'onetime_token' : onetime_token  };
-			var ret_url = "";
-			var try_count = 5;
-			$.getJSON('/api/statuses/show/' + id + '.json', params, function(json) {
-				ret_url = json.entities.media[no].media_url + ":thumb";
-				dfd.resolve(ret_url);
-			});
-			return dfd.promise();
+			var id = _url[_url.length - 1];
+			return dfd.resolve('http://p.twipple.jp/show/thumb/' + id);
+		}
+}, {
+	'name' : 'lockerz.com',
+		'func' : function(url) {
+			var dfd = $.Deferred();
+			var _url = 'http://api.plixi.com/api/tpapi.svc/imagefromurl?url=' + url + '&size=mobile';
+			return dfd.resolve(_url);
+		}
+}, {
+	'name' : 'photozou.jp',
+		'func' : function(url) {
+			var dfd = $.Deferred();
+			var _url = url.split('/');
+			var id = _url[_url.length - 1];
+			return dfd.resolve('http://photozou.jp/p/thumb/' + id);
 		}
 }, {
 	'name' : 'twitpic',
@@ -182,6 +193,22 @@ var tinyurl_list = [
 			var dfd = $.Deferred();
 			return dfd.resolve('http://gyazo-thumbnail.appspot.com/thumbnail?url=' + url);
 		}
+}, {
+	'name' : '/photo/',
+		'func' : function(url) {
+			var dfd = $.Deferred();
+			var _url = url.split('/');
+			var id = _url[_url.length - 3];
+			var no = _url[_url.length - 1] - 1 ;
+			var params = { "include_entities" : true, 'onetime_token' : onetime_token  };
+			var ret_url = "";
+			var try_count = 5;
+			$.getJSON('/api/statuses/show/' + id + '.json', params, function(json) {
+				ret_url = json.entities.media[no].media_url + ":thumb";
+				dfd.resolve(ret_url);
+			});
+			return dfd.promise();
+		}
 }
 ];
 
@@ -210,11 +237,17 @@ var movieurl_list = [
 var twitterurl_list = [
 {
 	'name' : 'statuses',
-		'regexp' : /https?:\/\/twitter\.com\/[a-z0-9_]+\/statu(s|ses)\/[0-9]+/i,
+		'regexp' : /https?:\/\/twitter\.com\/(#\!\/)?[a-z0-9_]+\/statu(s|ses)\/[0-9]+/i,
 		'func' : function(url) {
 			var _url = url.split('/');
-			var username = _url[3];
-			var status_id = _url[5];
+			var username_key = 3;
+			var status_id_key = 5;
+			if (_url[3] == '#!') {
+				username_key += 1;
+				status_id_key += 1;
+			}
+			var username = _url[username_key];
+			var status_id = _url[status_id_key];
 			var tweet = search_tweet('id', status_id);
 			if (tweet == false) {
 				var params = { 'onetime_token' : onetime_token }
@@ -278,6 +311,7 @@ var s_default = {
 
 	var msg = {
 		'reply' : '[reply]',
+		'replytoall' : '[reply to all]',
 		'rt' : '[RT]',
 		'qt' : '[QT]',
 		'fav' : '[fav]',
@@ -350,7 +384,7 @@ var auto_link_user = function(text) {
 
 var auto_link = function(text) {
 	return text
-		.replace(/(https?:\/\/[a-z0-9~!@#$%^&*_,+=\-\/\.\?]*)/ig, "<a href='$1' target='_blank' onclick=\"adjust_meta_click(this); link_click(this,'$1'); return false;\">$1</a>")
+		.replace(/(https?:\/\/[a-z0-9~!#$%^&*_,+=\-\/\.\?]*)/ig, "<a href='$1' target='_blank' onclick=\"adjust_meta_click(this); link_click(this,'$1'); return false;\">$1</a>")
 		.replace(/(\s|^)(#\S+)/ig, "$1<a href='http://twitter.com/search?q=$2' onclick=\"adjust_meta_click(this); get_timeline('search', '$2', true, true); return false;\">$2</a>")
 		.replace(/q=#/, "q=%23");
 }
@@ -444,8 +478,13 @@ var make_tweets_html = function(target, data, type) {
 		var screen_name = data.from_user;
 		var profile_image_url = data.profile_image_url;
 	} else {
-		var screen_name = data.user.screen_name
-			var profile_image_url = data.user.profile_image_url;
+		var screen_name = data.user.screen_name;
+		var profile_image_url = data.user.profile_image_url;
+	}
+
+	var text = data.text;
+	if (data.retweeted_status != null) {
+		text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text;
 	}
 
 	$(_target)
@@ -454,7 +493,7 @@ var make_tweets_html = function(target, data, type) {
 				+ '<input type="hidden" class="screen_name" value="'+screen_name+'">'
 				+ '<img class="profile_image" src="'+profile_image_url+'">'
 				+ '<span class="screen_name"><a href = "'+twitter_url + screen_name+'" onclick="user(this); return false;">' + screen_name+'</a></span>')
-		.append($('<span class="text">' + auto_link_user(auto_link(data.text)) + '</span>').toggle(
+		.append($('<span class="text">' + auto_link_user(auto_link(text)) + '</span>').toggle(
 					function(){$(this).siblings('.meta').show()},
 					function(){$(this).siblings('.meta').hide()}
 					))
@@ -464,6 +503,7 @@ var make_tweets_html = function(target, data, type) {
 				.iff(is_in_reply_to, data.in_reply_to_status_id)
 				.append('<li><span class="in_reply_to"><a href="' + twitter_url + data.in_reply_to_screen_name + '/status/' + data.in_reply_to_status_id_str+ '" onclick="in_reply_to(this); return false;">in reply to ' + data.in_reply_to_screen_name + '</a></li>').end()
 				.append('<li><a href="#" onclick="reply(this); return false;">'+msg['reply']+'</a></li>'
+					+ '<li><a href="#" onclick="reply_to_all(this); return false;">'+msg['replytoall']+'</a></li>'
 					+ '<li><a href="#" onclick="quoted_tweet(this); return false;">'+msg['qt']+'</a></li>'
 					+ '<li><a href="#" onclick="re_tweet(this); return false;">'+msg['rt']+'</a></li>')
 				.iff(is_true, data.favorited)
@@ -493,11 +533,16 @@ var display_timeline = function(tl_type, focus_flg) {
 		+ '</section>';
 		$('body').append(html);
 		if (tl_type == 'home_timeline') {
-			$("#tab").tabs("add",cid,tl_type,1);
+			$("#tab").tabs("add", cid, method_list[tl_type]['tab'], 1);
 		} else if (tl_type == 'mentions') {
-			$("#tab").tabs("add",cid,tl_type,2);
+			var index = 1;
+			if ($("#tablist li:nth-child(2) a span").text() == method_list['home_timeline']['tab']) {
+				index = 2;
+			}
+			$("#tab").tabs("add", cid, method_list[tl_type]['tab'], index);
 		} else {
-			$("#tab").tabs("add",cid,tl_type);
+			var tab_name = tl_type.replace(/^lists\//,'').replace(/^search\//,'?q=');
+			$("#tab").tabs("add", cid, tab_name);
 		}
 		if (focus_flg) {
 			if (tl_type == 'home_timeline') {
@@ -514,8 +559,13 @@ var display_timeline = function(tl_type, focus_flg) {
 		if (tl[i] != null && tl[i].id <= s[tl_type]['old_since_id']) {
 			continue;
 		}
-		if ($(cid + ' article').length >= display_max) $(cid + ' article:last-child').remove()
-			make_tweets_html(cid + ' .tweets' , tl[i], 'prepend')
+		if ($(cid + ' article').length >= display_max) { 
+			$(cid + ' article:last-child').remove();
+		}
+		make_tweets_html(cid + ' .tweets' , tl[i], 'prepend');
+		if (tl[i].text.match(/^RT/)) {
+			console.log(tl[i]);
+		}
 	}
 }
 
@@ -641,8 +691,8 @@ var user_info = function(screen_name) {
 			tl_store[screen_name] = new Array();
 			json.reverse();
 			for (i=0;i<json.length;i++) {
-				tl_store[screen_name].push(json[i])
-					make_tweets_html(cid + ' .tweets', json[i], 'prepend');
+				tl_store[screen_name].push(json[i]);
+				make_tweets_html(cid + ' .tweets', json[i], 'prepend');
 			}
 		});
 }
@@ -704,6 +754,7 @@ var display_statuses = function(data) {
 	}
 	var oid = create_id_from_tl(data.id_str);
 	var cid = '#' + oid;
+	$(cid).remove();
 	$('<section id="'+oid+'" class="statuses"><section class="tweets"></section></section>')
 		.dialog({'title':'tweet','width':dialog_width});
 	make_tweets_html(cid + ' .tweets' , data, 'append')
@@ -712,6 +763,17 @@ var display_statuses = function(data) {
 var reply = function(_this) {
 	$('#update .status').val('@' + $(_this).closest('ul').siblings('input.screen_name').val());
 	$('#update .in_reply_to_status_id').val($(_this).closest('ul').siblings('input.id').val());
+}
+var reply_to_all = function(_this) {
+	var status_id = $(_this).closest('ul').siblings('input.id').val();
+	var matches = search_tweet('id', status_id).text.match(/@([a-z0-9_]{1,15})/ig);
+	var target_user = '@' + $(_this).closest('ul').siblings('input.screen_name').val()
+	if (matches == null) {
+		$('#update .status').val(target_user).val();
+	} else {
+		$('#update .status').val(target_user + ' ' + matches.join(' ').replace(target_user, ''));
+	}
+	$('#update .in_reply_to_status_id').val(status_id);
 }
 
 var quoted_tweet = function(_this) {
@@ -731,8 +793,8 @@ var get_timeline = function(type, words, first_flg, focus_flg) {
 			if (words.indexOf('/') == -1) {
 				return false;
 			}
-			_words = words.split('/')
-				url = url.replace(/%username%/, _words[0]).replace(/%list%/,_words[1]);
+			_words = words.split('/');
+			url = url.replace(/%username%/, _words[0]).replace(/%list%/,_words[1]);
 		}
 		if (type == 'search') {
 			url = url.replace(/%search%/, words).replace(/#/, '%23');
@@ -765,6 +827,9 @@ var get_timeline = function(type, words, first_flg, focus_flg) {
 	var params = {
 		'onetime_token' : onetime_token,
 		'count'    : s[tl_type]['count']
+	}
+	if (type == 'lists') {
+		params['include_rts'] = 1
 	}
 	if (type != 'search') {
 		params['page'] = s[tl_type]['page'];
