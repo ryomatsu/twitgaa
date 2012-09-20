@@ -1,4 +1,7 @@
 changelog
+2012-09-20
+Move config to separated file
+
 2012-05-06
 Support Lockerz's image thumbnail
 Fix some themes
