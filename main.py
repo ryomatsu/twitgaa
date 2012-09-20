@@ -21,18 +21,13 @@ TEMPLATEDIR = os.path.dirname(__file__) + '/template/'
 import oauth
 import logging
 
+import config
+
 # dev
-APPLICATION_KEY = "JP26RVIL9lOwzDbz2P3juA"
-APPLICATION_SECRET = "9pzIdYNowdL5eUf2xBKqtprSWsmM10XHCLOTj79ERM4"
-OAUTH_CALLBACK_URL = "%s/oauth/verify" % 'http://127.0.0.1:8081'
+APPLICATION_KEY = config.APPLICATION_KEY
+APPLICATION_SECRET = config.APPLICATION_SECRET
+OAUTH_CALLBACK_URL = "%s/oauth/verify" % config.OAUTH_CALLBACK_URL
 
-# appengine
-#APPLICATION_KEY = "hqWlktGVP7NIIXQbEWxQOw"
-#APPLICATION_SECRET = "2U6a3RkVkjIbhDIJO90EbUxltnxaoPQwlMLEDpBqHpo"
-#OAUTH_CALLBACK_URL = "%s/oauth/verify" % 'http://twitgaa.appspot.com/'
-
-
-#OAUTH_CALLBACK_URL = "%s/oauth/verify" % 'http://twitgaa.appspot.com'
 client = oauth.TwitterClient(APPLICATION_KEY, APPLICATION_SECRET, OAUTH_CALLBACK_URL)
 
 api_base_url   = "http://api.twitter.com/1/"
