@@ -1,4 +1,2 @@
-Spam report button
-change Action Button to no button
-no popup inline tree
-Direct mail
+report4spam
+DM
