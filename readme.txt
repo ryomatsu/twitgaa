@@ -11,9 +11,9 @@ Written by Python and jQuery
 * Google App Engine account
 * Twitter OAuth Token
 
-after get oauth token,
-make config.py file from config_sample.py
-and write token and your gaa url
+1. make config.py file from config_sample.py
+2. and write token and your gaa url.
+3. edit app.yaml for your google app engine
 
 # License
 BSD licence
