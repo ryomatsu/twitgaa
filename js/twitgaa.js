@@ -771,7 +771,7 @@ var reply_to_all = function(_this) {
 	if (matches == null) {
 		$('#update .status').val(target_user).val();
 	} else {
-		$('#update .status').val(target_user + ' ' + matches.join(' ').replace(target_user, ''));
+		$('#update .status').val((target_user + ' ' + matches.join(' ').replace(target_user, '')).replace('@' + mine.screen_name,''));
 	}
 	$('#update .in_reply_to_status_id').val(status_id);
 }
